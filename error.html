@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error | Something Went Wrong</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary: #ffd700;
+            --background: #000000;
+            --accent: #00ffa3;
+            --accent-hover: #00e090;
+            --text: #ffffff;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: var(--transition);
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.light-mode {
+            --background: #f5f5f5;
+            --text: #121212;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .error-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 2rem;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary);
+            color: var(--background);
+        }
+
+        /* Error Animation */
+        .animation-container {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        /* Error Content */
+        .error-content {
+            max-width: 800px;
+            margin: 0 auto;
+            transform: translateY(30px);
+            opacity: 0;
+        }
+
+        .error-title {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-weight: 900;
+            letter-spacing: -1px;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .error-message {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Solutions */
+        .solutions {
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            transform: translateY(30px);
+            opacity: 0;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease;
+        }
+
+        .solutions:hover {
+            transform: rotateX(5deg) rotateY(5deg) translateY(0);
+        }
+
+        .solutions h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .solutions-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .solution-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            text-align: left;
+        }
+
+        .solution-item::before {
+            content: "•";
+            color: var(--accent);
+            font-size: 1.5rem;
+            line-height: 1.5rem;
+        }
+
+        /* Buttons */
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--background);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--accent);
+            color: var(--background);
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.2;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .error-title {
+                font-size: 2.5rem;
+            }
+
+            .error-message {
+                font-size: 1.2rem;
+            }
+
+            .solutions {
+                padding: 1.5rem;
+            }
+
+            .solutions-list {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .animation-container {
+                width: 200px;
+                height: 200px;
+            }
+        }
+
+        /* Keyframe Animations */
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+            }
+            20% {
+                transform: translate(-5px, 5px);
+            }
+            40% {
+                transform: translate(-5px, -5px);
+            }
+            60% {
+                transform: translate(5px, 5px);
+            }
+            80% {
+                transform: translate(5px, -5px);
+            }
+            100% {
+                transform: translate(0);
+            }
+        }
+
+        .glitch {
+            animation: glitch 0.5s ease-in-out infinite alternate;
+            animation-play-state: paused;
+        }
+
+        .glitch:hover {
+            animation-play-state: running;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation" id="bgAnimation"></div>
+    
+    <div class="container">
+        <header class="header">
+            <div class="logo">DELUX</div>
+            <button class="theme-toggle" id="themeToggle">
+                <span id="themeIcon">🌙</span>
+                <span id="themeText">Light Mode</span>
+            </button>
+        </header>
+
+        <main class="error-page">
+            <div class="animation-container">
+                <div id="errorAnimation"></div>
+            </div>
+
+            <div class="error-content">
+                <h1 class="error-title glitch">Oops! Something Went Wrong</h1>
+                <p class="error-message" id="errorMessage">We couldn't complete your request. An error occurred—please try again.</p>
+                
+                <div class="buttons">
+                    <button class="btn btn-primary" id="refreshBtn">
+                        <span>Refresh Page</span>
+                    </button>
+                    <button class="btn btn-secondary">
+                        <span>Contact Support</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="solutions">
+                <h2>Let's Try to Fix This</h2>
+                <ul class="solutions-list">
+                    <li class="solution-item">Check your internet connection</li>
+                    <li class="solution-item">Make sure you are not using a VPN or proxy</li>
+                    <li class="solution-item">Try refreshing the page or using a different browser</li>
+                    <li class="solution-item">Clear your cache and cookies</li>
+                    <li class="solution-item">Disable browser extensions that might interfere with loading</li>
+                    <li class="solution-item">If the issue persists, contact support</li>
+                </ul>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2025 DeluxNetwork. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize GSAP animations
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate error content
+            gsap.to('.error-content', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power3.out',
+                delay: 0.5
+            });
+
+            // Animate solutions
+            gsap.to('.solutions', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power3.out',
+                delay: 0.8
+            });
+
+            // Load Lottie animation
+            const errorAnimation = lottie.loadAnimation({
+                container: document.getElementById('errorAnimation'),
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                path: 'https://assets3.lottiefiles.com/packages/lf20_error.json',
+                rendererSettings: {
+                    preserveAspectRatio: 'xMidYMid slice'
+                }
+            });
+
+            // Fallback for Lottie animation if the URL is invalid
+            errorAnimation.addEventListener('data_failed', () => {
+                const errorAnimationElement = document.getElementById('errorAnimation');
+                errorAnimationElement.innerHTML = `
+                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="100" cy="100" r="50" fill="#ffd700" />
+                        <text x="100" y="115" font-size="60" text-anchor="middle" fill="#000">!</text>
+                    </svg>
+                `;
+            });
+
+            // Create random particles for background animation
+            const bgAnimation = document.getElementById('bgAnimation');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                createParticle();
+            }
+
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size (smaller on mobile)
+                const isMobile = window.innerWidth <= 768;
+                const size = Math.random() * (isMobile ? 5 : 10) + 1;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                const xPos = Math.random() * 100;
+                const yPos = Math.random() * 100;
+                particle.style.left = `${xPos}%`;
+                particle.style.top = `${yPos}%`;
+                
+                // Random animation
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 5;
+                
+                // Animate with GSAP
+                gsap.to(particle, {
+                    x: Math.random() * 100 - 50,
+                    y: Math.random() * 100 - 50,
+                    opacity: Math.random() * 0.5 + 0.1,
+                    duration: duration,
+                    delay: delay,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: 'sine.inOut'
+                });
+                
+                bgAnimation.appendChild(particle);
+            }
+
+            // Parallax effect
+            document.addEventListener('mousemove', (e) => {
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                
+                gsap.to('.animation-container', {
+                    x: (x - 0.5) * 30,
+                    y: (y - 0.5) * 30,
+                    duration: 1,
+                    ease: 'power1.out'
+                });
+                
+                gsap.to('.error-title', {
+                    x: (x - 0.5) * 10,
+                    y: (y - 0.5) * 10,
+                    duration: 1,
+                    ease: 'power1.out'
+                });
+            });
+
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+            
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                
+                if (document.body.classList.contains('light-mode')) {
+                    themeIcon.textContent = '☀️';
+                    themeText.textContent = 'Dark Mode';
+                } else {
+                    themeIcon.textContent = '🌙';
+                    themeText.textContent = 'Light Mode';
+                }
+            });
+
+            // Refresh button functionality
+            const refreshBtn = document.getElementById('refreshBtn');
+            refreshBtn.addEventListener('click', () => {
+                window.location.reload();
+            });
+
+            // Error messages rotation
+            const errorMessages = [
+                "Oops! Something went wrong.",
+                "We couldn't complete your request.",
+                "An error occurred—please try again.",
+                "The system encountered an unexpected issue.",
+                "Connection interrupted. Please retry."
+            ];
+            
+            const errorMessage = document.getElementById('errorMessage');
+            let currentMessageIndex = 0;
+            
+            setInterval(() => {
+                currentMessageIndex = (currentMessageIndex + 1) % errorMessages.length;
+                
+                gsap.to(errorMessage, {
+                    opacity: 0,
+                    y: -10,
+                    duration: 0.5,
+                    onComplete: () => {
+                        errorMessage.textContent = errorMessages[currentMessageIndex];
+                        gsap.to(errorMessage, {
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.5
+                        });
+                    }
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
